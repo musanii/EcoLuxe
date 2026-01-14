@@ -1,0 +1,35 @@
+.wrapper {
+    background-color: #f8fafc;
+}
+
+/* Header */
+.header a {
+    color: #2c5f2d; /* Forest Green */
+    font-size: 22px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Body Links */
+.content-cell a {
+    color: #2c5f2d;
+}
+
+/* Buttons (Success = Confirmed/Completed) */
+.button-success {
+    background-color: #2c5f2d !important;
+    border-color: #2c5f2d !important;
+    color: #ffffff !important;
+}
+
+/* Primary Buttons (In Progress) */
+.button-primary {
+    background-color: #9c8412 !important; /* EcoLuxe Gold */
+    border-color: #9c8412 !important;
+}
+
+/* Panels */
+.panel-content {
+    background-color: #eef5ee;
+    color: #2c5f2d;
+}

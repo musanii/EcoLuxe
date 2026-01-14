@@ -1,0 +1,117 @@
+@import 'tailwindcss';
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+@import '../../vendor/livewire/flux/dist/flux.css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    /* --- 1. Brand Colors --- */
+    /* A deep, sophisticated forest green for "Eco" */
+  
+    --color-ecoluxe-green: #2D5A27; 
+    --color-ecoluxe-gold: #C5A059;
+    --color-ecoluxe-ink: #1C1C1C;
+    --color-ecoluxe-cream: #FDFCF9; /* Much softer than pure white */
+
+    /* --- 2. Typography --- */
+    /* Elegant Serif for headings (Luxe) */
+    --font-serif: "Playfair Display", serif;
+    /* Clean Sans for body text (Modern/Efficient) */
+    --font-sans: "Instrument Sans", sans-serif;
+
+    /* --- 3. Custom Accents (The logic you already have) --- */
+    --color-accent: var(--color-ecoluxe-green);
+    --color-accent-content: var(--color-white);
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-white);
+        --color-accent-content: var(--color-white);
+        --color-accent-foreground: var(--color-neutral-800);
+    }
+}
+
+@layer base {
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+[data-flux-field]:not(ui-radio, ui-checkbox) {
+    @apply grid gap-2;
+}
+
+[data-flux-label] {
+    @apply  !mb-0 !leading-tight;
+}
+
+input:focus[data-flux-control],
+textarea:focus[data-flux-control],
+select:focus[data-flux-control] {
+    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+/* \[:where(&)\]:size-4 {
+    @apply size-4;
+} */
+
+
+@layer components {
+    /* The "Soft Glow" Card - Better than a harsh shadow */
+    .luxe-card {
+        @apply bg-white border border-ecoluxe-ink/5 rounded-3xl p-8;
+        box-shadow: 0 10px 40px -10px rgba(45, 90, 39, 0.05);
+    }
+
+    /* The "Eco" Button - Rounded and sophisticated */
+    .btn-primary {
+        @apply bg-ecoluxe-green text-white px-8 py-4 rounded-full font-medium 
+               transition-all duration-300 hover:bg-ecoluxe-gold hover:-translate-y-1;
+    }
+}
+
+
+
+/* Prevent flicker before Alpine loads */
+[x-cloak] { display: none !important; }
+
+/* Lock scroll when menu is open */
+body:has([x-show="mobileMenuOpen"]) {
+    overflow: hidden !important;
+}
+
+
+
+/* Ensure the body lock works on all devices */
+body.overflow-hidden {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+/* Prevent layout shifts while Livewire loads */
+[wire\:loading] {
+    cursor: wait;
+}
+
+/* Custom Fade for Step Transitions */
+.livewire-fade-enter {
+    opacity: 0;
+    transform: translateY(10px);
+}
+.livewire-fade-enter-active {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 1;
+    transform: translateY(0);
+}
