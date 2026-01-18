@@ -3,28 +3,27 @@
 namespace App\Mail;
 
 use App\Models\Booking;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class BookingInvoice extends Mailable
+class AbandonedBookingFollowUp extends Mailable
 {
     use Queueable, SerializesModels;
-
-    public $booking;
+        public $booking;
 
     /**
      * Create a new message instance.
      */
-    public function __construct( Booking $booking )
+  
+    public function __construct(Booking $booking)
     {
         $this->booking = $booking;
     }
+    
 
     /**
      * Get the message envelope.
@@ -32,7 +31,7 @@ class BookingInvoice extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your EcoLuxe Invoice - '. substr($this->booking->id,0,8),
+            subject: 'Is your sanctuary still waiting?',
         );
     }
 
@@ -41,10 +40,17 @@ class BookingInvoice extends Mailable
      */
     public function content(): Content
     {
+        //Generate the secure , Signed  URL
+        $resumeUrl = URL::temporarySignedRoute(
+            'booking.resume',
+            now()->addDays(3),
+            ['booking' => $this->booking->id]
+        );
         return new Content(
-            view: 'emails.booking-invoice',
-            with: [
+            view: 'emails.abandoned-booking',
+             with: [
                 'booking' => $this->booking,
+                'resumeUrl' => $resumeUrl,
             ],
         );
     }
@@ -56,13 +62,6 @@ class BookingInvoice extends Mailable
      */
     public function attachments(): array
     {
-        // 1. Generate the PDF using a specific blade view
-        $pdf = Pdf::loadView('invoices.booking', ['booking' => $this->booking]);
-
-        // 2. Attach it directly from data (no need to save to disk)
-        return [
-            Attachment::fromData(fn () => $pdf->output(), 'EcoLuxe-Invoice-' . substr($this->booking->id, 0, 8) . '.pdf')
-                ->withMime('application/pdf'),
-        ];
+        return [];
     }
 }

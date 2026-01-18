@@ -73,4 +73,19 @@ class Booking extends Model
         };
 
     }
+    /**
+     * Generate a Google Maps link for the booking address. 
+     */
+
+    public function getGoogleMapsLinkAttribute(): string
+    {
+        $query = implode(',', array_filter([
+            $this->address,
+            $this->city,
+            $this->zip_code,
+            'Kenya'
+
+        ]));
+        return "https://www.google.com/maps/search/?api=1&query={urlencode($query)}";
+    }
 }

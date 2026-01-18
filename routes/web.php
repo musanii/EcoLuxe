@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\Webhook\BookingResumeController;
 use App\Http\Controllers\Webhook\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -31,8 +32,13 @@ Route::get('/booking/success/{booking}', function (Booking $booking) {
     ]);
 })->name('booking.success')->middleware(['auth']);
 
+Route::get('/booking/{booking}/resume', [BookingResumeController::class, 'resume'])
+->name('booking.resume')
+->middleware('signed');
+
 //cancel route
 Route::view('booking/cancelled','booking-cancelled')->name('booking.cancel');
+Route::view('/booking/expired', 'bookings.expired')->name('booking.expired');
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 Route::get('/booking/{booking}/rate', [FeedbackController::class, 'show'])->name('booking.rating');

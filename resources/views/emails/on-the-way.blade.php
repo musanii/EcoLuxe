@@ -12,7 +12,7 @@
         
         <div style="margin-top: 40px; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
             <p style="font-size: 16px; color: #333;"><strong>Hi {{ $booking->customer_name }},</strong></p>
-            <p style="font-size: 14px; line-height: 1.6; color: #555;">Great news! Your EcoLuxe professional is officially **on the way** to your location.</p>
+            <p style="font-size: 14px; line-height: 1.6; color: #555;">Great news! Your EcoLuxe professional is officially <strong>on the way</strong> to your sanctuary.</p>
             
             <div style="background-color: #F8F7F2; border-left: 4px solid #2D4031; padding: 20px; margin: 25px 0;">
                 <p style="margin: 0; font-size: 15px; color: #2D4031;">
@@ -26,13 +26,20 @@
                     <td style="text-align: right; font-weight: bold; color: #333; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">{{ $booking->service->name }}</td>
                 </tr>
                 <tr>
-                    <td style="font-size: 11px; color: #999; text-transform: uppercase; padding: 8px 0;">Address</td>
-                    <td style="text-align: right; font-weight: bold; color: #333; padding: 8px 0;">{{ $booking->customer_address ?? 'Your saved location' }}</td>
+                    <td style="font-size: 11px; color: #999; text-transform: uppercase; padding: 8px 0;">Destination</td>
+                    <td style="text-align: right; font-weight: bold; color: #333; padding: 8px 0;">{{ $booking->address }}, {{ $booking->city }}</td>
                 </tr>
             </table>
 
-            <p style="font-size: 12px; color: #888; font-style: italic; text-align: center; margin-top: 20px;">
-                Please ensure our team has access to the property upon arrival to begin your transformation.
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{ url('/bookings/' . $booking->id . '/track') }}" 
+                   style="background-color: #2D4031; color: #F8F7F2; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-size: 11px; font-weight: bold; display: inline-block; letter-spacing: 1px; text-transform: uppercase;">
+                   Track My Professional
+                </a>
+            </div>
+
+            <p style="font-size: 12px; color: #888; font-style: italic; text-align: center; margin-top: 25px;">
+                Please ensure our team has access to the property via the gate or concierge upon arrival to begin your transformation.
             </p>
         </div>
 

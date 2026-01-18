@@ -115,3 +115,13 @@ body.overflow-hidden {
     opacity: 1;
     transform: translateY(0);
 }
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom selection color to match brand */
+::selection {
+    background-color: #1a4d2e; /* ecoluxe-green */
+    color: white;
+}

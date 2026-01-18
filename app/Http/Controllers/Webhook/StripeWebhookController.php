@@ -59,8 +59,8 @@ class StripeWebhookController extends Controller
         // SCENARIO 3: Session Expired (User abandoned the checkout)
         case 'checkout.session.expired':
             $booking->update([
-                'status' => 'cancelled',
-                'payment_status' => 'unpaid',
+                'status' => 'pending_payment',
+                'payment_status' => 'abandoned',
             ]);
             break;
     }

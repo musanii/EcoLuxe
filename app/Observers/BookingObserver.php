@@ -46,15 +46,25 @@ public function updated(Booking $booking){
     //only trigger if the status column was changed
     if($booking->wasChanged('status')){
         //1. When cleaner clicks "On My_Way"
-        if ($booking->status ==='on_the_way'){
+        if ($booking->status === 'on_the_way'){
             Mail::to($booking->customer_email)->send(new CleanerOnTheWay($booking));
+            Log::info("Customer notified: Cleaner is on the way for Booking #{$booking->id}");
         }
 
         // 2. When cleaner clicks "Mark Finished"
             if ($booking->status === 'completed') {
                 Mail::to($booking->customer_email)->send(new CleanerCompleted($booking));
+                Log::info("Customer notified: Job completed for Booking #{$booking->id}");
             }
     }
+
+    /**
+         * SPECIAL CASE: If Admin switches status to 'confirmed' via the edit form
+         * and cleaners are already attached.
+         */
+        if ($booking->wasChanged('status') && $booking->status === 'confirmed') {
+            $this->notifyCleaners($booking);
+        }
 }
     /**
      * Handle the Booking "deleted" event.
@@ -78,5 +88,21 @@ public function updated(Booking $booking){
     public function forceDeleted(Booking $booking): void
     {
         //
+    }
+
+    /**
+     * Logic to notify cleaners when admin changes status to 'confirmed'
+     */
+
+    private function notifyCleaners(Booking $booking): void
+    {
+        // Load cleaners relationship if not already loaded
+        $booking->load('cleaners');
+
+        foreach ($booking->cleaners as $cleaner) {
+            Log::info("Notifying cleaner {$cleaner->email} for Booking #{$booking->id} due to admin status change.");
+            Mail::to($cleaner->email)->send(new CleanerAssignedNotification($booking));
+            Log::info("Assignment email sent to cleaner: {$cleaner->email}");
+        }
     }
 }
