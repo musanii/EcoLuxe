@@ -60,6 +60,10 @@ class Booking extends Model
         ->withTimestamps();
     }
 
+    public function messages(){
+        return $this->hasMany(BookingMessage::class);
+    }
+
     //Helper  to get colors for Filament badges
     public function getStatusColor(): string{
 
@@ -87,5 +91,13 @@ class Booking extends Model
 
         ]));
         return "https://www.google.com/maps/search/?api=1&query={urlencode($query)}";
+    }
+
+    public function getTransformationDurationAttribute(): ?string
+    {
+        if (!$this->started_at || !$this->completed_at) {
+            return 'In Progress / Not Started';
+        }
+        return $this->started_at->diffForHumans($this->completed_at, true);
     }
 }

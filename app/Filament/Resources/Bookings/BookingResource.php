@@ -10,6 +10,8 @@ use App\Filament\Resources\Bookings\Schemas\BookingForm;
 use App\Filament\Resources\Bookings\Schemas\BookingInfolist;
 use App\Filament\Resources\Bookings\Tables\BookingsTable;
 use App\Models\Booking;
+use App\Models\BookingMessage;
+use App\Models\User;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
@@ -18,6 +20,8 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Collection;
 use Filament\Resources\Resource;
@@ -26,6 +30,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Notifications\Notification;
+use Filament\Notifications\Actions\Action as NotificationAction;
+use Illuminate\Support\Str;
 
 
 class BookingResource extends Resource
@@ -60,7 +66,12 @@ class BookingResource extends Resource
                 ->color('gray')
                 ->searchable(),
                 TextColumn::make('customer_name')
-                ->searchable(),
+                ->description(fn (Booking $record) => $record->customer_email)
+                    ->badge(fn (Booking $record) => 
+                        $record->messages()->whereNull('read_at')->where('user_id', '!=', auth()->id())->count() ?: null
+                    )
+                    ->color('danger') // Red badge for unread counts
+                    ->searchable(),
                 TextColumn::make('customer_email')
                 ->searchable(),
                    TextColumn::make('customer_phone')
@@ -137,7 +148,7 @@ class BookingResource extends Resource
                     ->visible(fn (Booking $record) => 
                         auth()->user()->role === 'cleaner' && $record->status === 'on_the_way'
                     )
-                    ->action(fn (Booking $record) => $record->update(['status' => 'in_progress'])),
+                    ->action(fn (Booking $record) => $record->update(['status' => 'in_progress', 'started_at' => now()])),
 
                 // 3. CLEANER SAYS: "I am done"
                 Action::make('finish_cleaning')
@@ -148,13 +159,69 @@ class BookingResource extends Resource
                     ->visible(fn (Booking $record) => 
                         auth()->user()->role === 'cleaner' && $record->status === 'in_progress'
                     )
-                    ->action(function (Booking $record) {
-                        $record->update(['status' => 'completed']);
-                        Notification::make()->title('Job Completed!')->success()->send();
+                    ->form([
+                        FileUpload::make('after_photo')
+                        ->label('Evidence of Transformation')
+                        ->image()
+                        ->imageEditor()
+                        ->required()
+                        ->helperText('Upload a photo showing the completed cleaning job. This helps maintain quality and transparency.'),
+                    ])
+                    ->action(function (Booking $record, array $data) {
+                        $record->update([
+                            'status' => 'completed',
+                            'after_photo' => $data['after_photo'],
+                            'completed_at' => now(),
+                        ]);
+                        Notification::make()->title('Sanctuary Completed!')->success()->send();
                     }),
 
                 ViewAction::make(),
                 EditAction::make()->visible(fn() => auth()->user()->role === 'admin'),
+
+                Action::make('internal_chat')
+                    ->label('Internal Chat')
+                    ->icon('heroicon-m-chat-bubble-left-right')
+                    ->color('gray')
+                    ->modalHeading('Booking Communication')
+                    ->visible(fn()=>in_array(auth()->user()->role, ['admin','cleaner']))
+                    ->form([
+                        Textarea::make('message')
+                        ->label('New Message')
+                        ->placeholder('Type a note for the team...')
+                        ->required(),
+                    ])
+                    ->action(function (Booking $record, array $data) {
+                    // 1. Create the message
+                    $newMessage = $record->messages()->create([
+                        'user_id' => auth()->id(),
+                        'message' => $data['message'],
+                    ]);
+
+                   // 2. Notify Admins if sender is a Cleaner
+    if (auth()->user()->role === 'cleaner') {
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        
+        \Filament\Notifications\Notification::make()
+            ->title('New Team Message')
+            ->body(Str::limit($data['message'], 50))
+            ->icon('heroicon-o-chat-bubble-left-right')
+            ->color('success')
+            ->actions([
+                // We use the absolute path here to prevent collision with Table Actions
+              Action::make('view')
+                    ->label('View Chat')
+                    ->button()
+                    ->url(fn () => BookingResource::getUrl('view', ['record' => $record])),
+            ])
+            ->sendToDatabase($admins);
+    }
+
+    \Filament\Notifications\Notification::make()
+        ->title('Message Sent')
+        ->success()
+        ->send();
+})
             ])
             
 
@@ -218,4 +285,25 @@ public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     // Forces customers to ONLY see their own email-matched bookings
     return $query->where('customer_email', $user->email);
 }
+
+public static function getNavigationBadge(): ?string
+{
+    $user = auth()->user();
+    
+    // Admins see total unread team messages
+    if ($user->role === 'admin') {
+        return BookingMessage::whereHas('booking')
+            ->where('user_id', '!=', $user->id)
+            ->whereNull('read_at')
+            ->count() ?: null;
+    }
+
+    return null;
 }
+
+
+  public static  function getNavigationBadgeColor(): ?string{
+        return 'danger';
+    }
+}
+

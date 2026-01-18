@@ -16,4 +16,11 @@ class ViewBooking extends ViewRecord
             EditAction::make(),
         ];
     }
+
+    public function afterFill(){
+        $this->record->messages()
+        ->where('user_id','!=',  auth()->id())
+        ->whereNull('read_at')
+        ->update(['read_at'=>now()]);
+    }
 }

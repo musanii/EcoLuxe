@@ -27,7 +27,16 @@ class BookingStats extends StatsOverviewWidget
 
     $diff = $currentMonthRevenue - $lastMonthRevenue;
 
+    //Recovery logic
+    //A booking is "Recovered" if it was once unpaid/abandoned but is now paid
+    $recoveredCount = Booking::whereNotNull('recovered_at')->count();
+
+    //---Quality Logic--
+    $avgRating = Booking::whereNotNull('rating')->avg('rating') ?? 0;
+
     return [
+
+        //Revenue Stat
         Stat::make('Monthly Revenue', 'USD ' . number_format($currentMonthRevenue, 2))
             ->description($diff >= 0 
                 ? 'USD ' . number_format($diff, 2) . ' increase' 
@@ -35,6 +44,20 @@ class BookingStats extends StatsOverviewWidget
             ->descriptionIcon($diff >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down')
             ->color($diff >= 0 ? 'success' : 'danger')
             ->chart([7, 3, 4, 5, 6, 3, 5, 8]),
+        
+          //Recovery Stat
+          Stat::make('Recovered Revenue',$recoveredCount)
+          ->label('Sanctuaries Saved')
+          ->description('Bookings rescued from abandonment')
+          ->descriptionIcon('heroicon-m-arrow-path')
+          ->color('info')
+          ->chart([1,5,2,8,4,10]),
+          
+          // 3. Quality Stat (New: Customer Satisfaction)
+            Stat::make('Service Quality', number_format($avgRating, 1) . ' / 5.0')
+                ->description('Average customer rating')
+                ->descriptionIcon('heroicon-m-star')
+                ->color($avgRating >= 4.5 ? 'success' : 'warning'),
         
         Stat::make('Active Bookings', Booking::where('status', 'confirmed')->count())
             ->description('Confirmed appointments')

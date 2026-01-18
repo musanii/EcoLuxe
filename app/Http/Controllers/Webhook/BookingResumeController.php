@@ -46,7 +46,10 @@ class BookingResumeController extends Controller
         ]);
 
         // Update the booking with the new session ID
-        $booking->update(['stripe_session_id' => $session->id]);
+        $booking->update([
+            'stripe_session_id' => $session->id,
+            'recovered_at'=>now()
+            ]);
 
         return redirect($session->url);
     
