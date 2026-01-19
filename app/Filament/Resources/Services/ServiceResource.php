@@ -125,4 +125,10 @@ public static function table(Table $table): Table
             'edit' => EditService::route('/{record}/edit'),
         ];
     }
+
+        public static function canViewAny(): bool
+            {
+                // Hides the "Users" link from the sidebar for non-admins
+                return auth()->user()?->role === 'admin';
+            }
 }

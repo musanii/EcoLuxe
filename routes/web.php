@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 use App\Models\Booking;
+use App\Livewire\BookingPending;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,6 +36,11 @@ Route::get('/booking/success/{booking}', function (Booking $booking) {
 Route::get('/booking/{booking}/resume', [BookingResumeController::class, 'resume'])
 ->name('booking.resume')
 ->middleware('signed');
+
+
+//mpesa
+Route::get('/booking/pending/{booking}', BookingPending::class)
+    ->name('booking.pending');
 
 //cancel route
 Route::view('booking/cancelled','booking-cancelled')->name('booking.cancel');

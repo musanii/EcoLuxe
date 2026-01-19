@@ -219,6 +219,39 @@
     <input type="text" wire:model="address" placeholder="e.g. Riverside Drive, Acacia Court" class="w-full p-5 bg-white rounded-2xl border-none ring-1 ring-ecoluxe-ink/5 focus:ring-2 focus:ring-ecoluxe-green outline-none shadow-sm">
 </div>
 
+{{-- 4. Payment Method Selection --}}
+<div class="space-y-4">
+    <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-ecoluxe-gold mb-4">4. Preferred Payment</label>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {{-- Stripe Option --}}
+        <button type="button" 
+            wire:click="$set('payment_method', 'stripe')"
+            class="flex items-center gap-4 p-5 rounded-2xl border-2 transition-all {{ $payment_method === 'stripe' ? 'border-ecoluxe-green bg-ecoluxe-green/5' : 'border-gray-100' }}">
+            <div class="p-2 bg-white rounded-lg shadow-sm">
+                <svg class="w-6 h-6 text-indigo-600" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V10h16v8z"/></svg>
+            </div>
+            <div class="text-left">
+                <p class="text-xs font-bold text-ecoluxe-ink uppercase tracking-wider">Card / Stripe</p>
+                <p class="text-[10px] text-ecoluxe-ink/40">Secure Global Payment</p>
+            </div>
+        </button>
+
+        {{-- M-Pesa Option --}}
+        <button type="button" 
+            wire:click="$set('payment_method', 'mpesa')"
+            class="flex items-center gap-4 p-5 rounded-2xl border-2 transition-all {{ $payment_method === 'mpesa' ? 'border-ecoluxe-green bg-ecoluxe-green/5' : 'border-gray-100' }}">
+            <div class="p-2 bg-white rounded-lg shadow-sm">
+                <span class="text-green-600 font-black text-xs">M</span>
+            </div>
+            <div class="text-left">
+                <p class="text-xs font-bold text-ecoluxe-ink uppercase tracking-wider">M-Pesa STK</p>
+                <p class="text-[10px] text-ecoluxe-ink/40">Direct Mobile Money</p>
+            </div>
+        </button>
+    </div>
+    @error('payment_method') <p class="text-red-500 text-[10px] font-bold mt-1 uppercase tracking-tighter">{{ $message }}</p> @enderror
+</div>
+
                 <div class="space-y-2">
                     <label class="text-[10px] font-bold uppercase tracking-widest text-ecoluxe-gold ml-2">Special Notes</label>
                     <textarea wire:model="special_instructions" rows="4" class="w-full p-5 bg-white rounded-2xl border-none ring-1 ring-ecoluxe-ink/5 focus:ring-2 focus:ring-ecoluxe-green transition-all outline-none shadow-sm"></textarea>

@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\Models\Booking;
 use App\Mail\BookingInvoice;
 use App\Services\Booking\PricingService;
+use App\Services\Payment\MpesaService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -160,8 +161,11 @@ public function updateQuote()
         $this->step = 2;
     }
 
+    public $payment_method ='stripe';
+
     public function finalizeBooking()
     {
+
         $this->validate([
             'customer_name' => 'required|string',
             'customer_email' => 'required|email',
@@ -170,6 +174,7 @@ public function updateQuote()
             'city' => 'required|string',
             'zip_code' => 'required|string',
             'scheduled_at' => 'required|date|after:today',
+            'payment_method'=>'required',
         ]);
 
         $user = User::firstOrCreate(
@@ -203,10 +208,55 @@ public function updateQuote()
             'discount_amount' => $this->quote['discount_amount'],
             'total_price' => $this->quote['total'],
             'special_instructions' => $this->special_instructions,
+            'payment_method'=>$this->payment_method,
             'payment_status' => 'pending_payment',
         ]);
 
-        Stripe::setApiKey(config('services.stripe.secret'));
+      // 3. Routing Logic
+        if ($this->payment_method === 'stripe') {
+            return $this->handleStripePayment($booking);
+        }
+
+        if ($this->payment_method === 'mpesa') {
+            return $this->handleMpesaPayment($booking);
+        }
+       
+    }
+
+    /**
+     * STK Push for M-Pesa
+     * 
+     */
+    protected function handleMpesaPayment(Booking $booking){
+
+    $mpesa = new MpesaService();
+
+        //$amountInKes = (int) round($booking->total_price * 130); //Example conversion
+        $amountInKes = 1;
+
+        $response = $mpesa->initiateStkPush(
+            $booking->customer_phone,
+            $amountInKes,
+            $booking->id
+        );
+
+    
+
+        if(isset($response['ResponseCode']) && $response['ResponseCode'] == '0')
+            {
+                $booking->update([
+                    'gateway_transaction_id' => $response['CheckoutRequestID']
+                ]);
+
+                //Redirect to a "Pending" page while we wait for the webhook
+                return redirect()->route('booking.pending', $booking->id);
+            }
+            $this->addError('payment_method','M-Pesa initiation failed.Please try again.');
+    }
+
+
+    protected function handleStripePayment(Booking $booking){
+         Stripe::setApiKey(config('services.stripe.secret'));
 
         $session = Session::create([
             'customer_email' => $this->customer_email,

@@ -39,6 +39,15 @@ return [
     'key' => env('STRIPE_KEY'),
     'secret' => env('STRIPE_SECRET'),
     'webhook_secret' => env('STRIPE_WEBHOOK_SECRET')
-],
+        ],
+
+        'mpesa' => [
+            'key' => env('MPESA_CONSUMER_KEY'),
+            'secret' => env('MPESA_CONSUMER_SECRET'),
+            'shortcode' => env('MPESA_SHORTCODE'),
+            'passkey' => env('MPESA_PASSKEY'),
+            'env' => env('MPESA_ENV', 'sandbox'),
+            'callback' => env('MPESA_CALLBACK_URL'),
+        ],
 
 ];

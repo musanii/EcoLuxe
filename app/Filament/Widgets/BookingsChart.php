@@ -72,4 +72,10 @@ protected function getFilters(): ?array
     {
         return 'line';
     }
+
+    public static function canView(): bool
+{
+    // Only admins see the financial stats
+    return auth()->user()->role === 'admin';
+}
 }

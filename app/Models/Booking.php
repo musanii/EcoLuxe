@@ -9,28 +9,30 @@ class Booking extends Model
 {
 
    use  HasUuids;
-    protected $fillable = [
-         'user_id',
-         'service_id',
-         'coupon_id',
-         'customer_name', 
-         'customer_email',
-         'customer_phone',
-         'scheduled_at', 
-         'total_rooms', 
-         'subtotal', 
-         'discount_amount', 
-         'total_price', 
-         'status',
-         'special_instructions',
-         'address',
-         'city',
-         'zip_code',
-         'stripe_session_id',
-         'payment_status',
-         'rating',
-         'feedback_comment'
-    ];
+    // protected $fillable = [
+    //      'user_id',
+    //      'service_id',
+    //      'coupon_id',
+    //      'customer_name', 
+    //      'customer_email',
+    //      'customer_phone',
+    //      'scheduled_at', 
+    //      'total_rooms', 
+    //      'subtotal', 
+    //      'discount_amount', 
+    //      'total_price', 
+    //      'status',
+    //      'special_instructions',
+    //      'address',
+    //      'city',
+    //      'zip_code',
+    //      'stripe_session_id',
+    //      'payment_status',
+    //      'rating',
+    //      'feedback_comment'
+    // ];
+
+    protected $guarded =[];
 
     const STATUS_PENDING = 'pending';
     const  STATUS_CONFIRMED ='confirmed';
