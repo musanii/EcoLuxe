@@ -200,9 +200,9 @@ class BookingResource extends Resource
 
                    // 2. Notify Admins if sender is a Cleaner
     if (auth()->user()->role === 'cleaner') {
-        $admins = \App\Models\User::where('role', 'admin')->get();
+        $admins = User::where('role', 'admin')->get();
         
-        \Filament\Notifications\Notification::make()
+        Notification::make()
             ->title('New Team Message')
             ->body(Str::limit($data['message'], 50))
             ->icon('heroicon-o-chat-bubble-left-right')
@@ -217,7 +217,7 @@ class BookingResource extends Resource
             ->sendToDatabase($admins);
     }
 
-    \Filament\Notifications\Notification::make()
+    Notification::make()
         ->title('Message Sent')
         ->success()
         ->send();
