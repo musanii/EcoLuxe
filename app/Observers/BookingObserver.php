@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Mail\BookingInvoice;
 use App\Mail\CleanerAssignedNotification;
 use App\Mail\CleanerCompleted;
 use App\Mail\CleanerOnTheWay;
@@ -24,6 +25,11 @@ class BookingObserver
      */
 public function saved(Booking $booking): void
 {
+    if($booking->payment_status ==='paid'){
+         Mail::to($booking->customer_email)->send(new BookingInvoice($booking));
+            Log::info("Customer notified: Payment ws success #{$booking->id}");
+
+    }
     // Refresh the relationship to make sure we see the newly synced cleaners
     $booking->load('cleaners');
 
