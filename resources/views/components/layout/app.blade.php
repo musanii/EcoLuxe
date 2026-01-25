@@ -6,6 +6,7 @@
     <title>{{ $title ?? 'EcoLuxe | Premium Sustainable Cleaning' }}</title>
     <style>[x-cloak] { display: none !important; } html { scroll-padding-top: 100px; }</style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <style>
@@ -96,7 +97,8 @@ class="antialiased bg-ecoluxe-cream text-ecoluxe-ink font-sans overflow-x-hidden
              class="fixed inset-0 h-screen w-full bg-ecoluxe-cream z-[110] lg:hidden flex flex-col items-center justify-center">
             <div class="flex flex-col gap-8 text-center">
                 <a href="#services" @click="mobileMenuOpen = false; document.body.style.overflow = 'auto'" class="text-4xl font-serif">Services</a>
-                <a href="#booking" @click="mobileMenuOpen = false; document.body.style.overflow = 'auto'" class="text-4xl font-serif">The Standard</a>
+                <a href="#booking" @click="mobileMenuOpen = false; document.body.style.overflow = 'auto'" class="text-4xl font-serif">The Concierge</a>
+                <a href="/#testimonials" @click="mobileMenuOpen = false; document.body.style.overflow = 'auto'" class="text-4xl font-serif">Kind Words</a>
                 <a href="#contact" @click="mobileMenuOpen = false; document.body.style.overflow = 'auto'" class="text-4xl font-serif">Inquiries</a>
             </div>
         </div>
@@ -148,7 +150,7 @@ class="antialiased bg-ecoluxe-cream text-ecoluxe-ink font-sans overflow-x-hidden
                 <div class="space-y-6 md:space-y-8">
                     <h4 class="text-ecoluxe-gold uppercase tracking-[0.2em] text-[10px] font-bold">Newsletter</h4>
                     <p class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">The weekly edit on sustainable luxury.</p>
-                    <input type="text" placeholder="Email address" class="w-full bg-transparent border-b border-white/10 py-4 focus:outline-none focus:border-ecoluxe-gold transition text-sm">
+                    @livewire('newsletter-subscribe')
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-between pt-12 border-t border-white/5 text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white/20 text-center md:text-left gap-6">
@@ -174,5 +176,6 @@ class="antialiased bg-ecoluxe-cream text-ecoluxe-ink font-sans overflow-x-hidden
             }
         }, 1500);
     </script>
+  
 </body>
 </html>

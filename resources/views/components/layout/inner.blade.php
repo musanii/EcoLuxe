@@ -107,7 +107,7 @@
             {{-- Desktop Nav --}}
             <div class="hidden lg:flex items-center gap-10 text-[11px] font-bold uppercase tracking-[0.2em]">
                 <a href="/#services" class="text-ecoluxe-ink/60 hover:text-ecoluxe-green transition-colors">Services</a>
-                <a href="/#booking" class="text-ecoluxe-ink/60 hover:text-ecoluxe-green transition-colors">The Standard</a>
+                <a href="/#booking" class="text-ecoluxe-ink/60 hover:text-ecoluxe-green transition-colors">The Concierge</a>
                 <a href="/#testimonials" class="text-ecoluxe-ink/60 hover:text-ecoluxe-green transition-colors">Kind Words</a>
                 <a href="/#contact" class="text-ecoluxe-ink/60 hover:text-ecoluxe-green transition-colors">Inquiries</a>
             </div>
@@ -131,7 +131,8 @@
              <button @click="mobileMenuOpen = false" class="absolute top-8 right-8 text-2xl">✕</button>
              <div class="flex flex-col gap-8 text-center text-3xl font-serif">
                 <a href="/#services" @click="mobileMenuOpen = false">Services</a>
-                <a href="/#booking" @click="mobileMenuOpen = false">The Standard</a>
+                <a href="/#booking" @click="mobileMenuOpen = false">The Concierge</a>
+                <a href="/#testimonials" @click="mobileMenuOpen = false;document.body.style.overflow = 'auto'" class="text-4xl font-serif">Kind Words</a>
                 <a href="/#contact" @click="mobileMenuOpen = false">Inquiries</a>
              </div>
         </div>
@@ -169,7 +170,7 @@
                 <div class="space-y-6 md:space-y-8">
                     <h4 class="text-ecoluxe-gold uppercase tracking-[0.2em] text-[10px] font-bold">Newsletter</h4>
                     <p class="text-[10px] text-white/40 uppercase tracking-widest leading-relaxed">The weekly edit on sustainable luxury.</p>
-                    <input type="text" placeholder="Email address" class="w-full bg-transparent border-b border-white/10 py-4 focus:outline-none focus:border-ecoluxe-gold transition text-sm">
+                    @livewire('newsletter-subscribe')
                 </div>
             </div>
             <div class="flex flex-col md:flex-row justify-between pt-12 border-t border-white/5 text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-white/20 text-center md:text-left gap-6">
