@@ -38,7 +38,7 @@
     $bgImage = $service->image_url ?? $images[$index % count($images)];
                 @endphp
 
-                <div class="group relative overflow-hidden rounded-[2.5rem] p-8 md:p-12 min-h-[450px] transition-all duration-700 hover:-translate-y-2 flex flex-col justify-end 
+                <a href="{{ route('services.show', $service->id) }}" class="group relative overflow-hidden rounded-[2.5rem] p-8 md:p-12 min-h-[450px] transition-all duration-700 hover:-translate-y-2 flex flex-col justify-end 
                     {{ $isFeatured ? 'bg-ecoluxe-ink text-white shadow-2xl md:scale-105 z-10' : 'bg-ecoluxe-cream text-ecoluxe-ink' }}">
                     
                     {{-- 1. THE BACKGROUND IMAGE LAYER --}}
@@ -76,7 +76,7 @@
                         {{ $isFeatured ? 'text-white' : 'text-ecoluxe-green' }}">
                         0{{ $index + 1 }}
                     </div>
-                </div>
+                </a>
             @endforeach
         </div>
     </div>

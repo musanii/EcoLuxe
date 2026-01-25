@@ -8,6 +8,7 @@ use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 use App\Models\Booking;
 use App\Livewire\BookingPending;
+use App\Models\Service;
 
 Route::get('/', function () {
     return view('welcome');
@@ -52,6 +53,10 @@ Route::post('/booking/{booking}/rate', [FeedbackController::class, 'store'])->na
 Route::get('/dashboard', function () {
     return redirect('/admin'); 
 })->middleware(['auth'])->name('dashboard');
+
+Route::get('/services/{service:id}', function(Service $service){
+    return view('services.show', compact('service'));
+})->name('services.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');

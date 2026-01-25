@@ -8,6 +8,26 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;600&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+    [x-cloak] { display: none !important; }
+    /* The loader will be visible by default and hidden via JS */
+    #global-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: #F7F3F0; /* ecoluxe-cream */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    body.loaded #global-loader {
+        opacity: 0;
+        visibility: hidden;
+    }
+    body.loading { overflow: hidden; }
+</style>
 </head>
 <body
 x-data="{ 
@@ -84,10 +104,23 @@ class="antialiased bg-ecoluxe-cream text-ecoluxe-ink font-sans overflow-x-hidden
 
   
 
-    {{-- Loading Spinner --}}
-    <div x-data="{ loading: true }" x-init="window.onload = () => { setTimeout(() => { loading = false; $dispatch('reveal-hero'); }, 800) }" x-show="loading" class="fixed inset-0 z-[200] bg-ecoluxe-cream flex flex-col items-center justify-center">
-        <h2 class="text-3xl font-serif font-bold text-ecoluxe-green animate-pulse">ECOLUXE</h2>
-    </div>
+    {{-- Fixed Loading Spinner --}}
+<div x-data="{ loading: true }" 
+     x-init="
+     document.body.style.overflow = 'hidden';
+     $nextTick(() => { 
+        setTimeout(() => { 
+            loading = false; 
+            $dispatch('reveal-hero'); 
+        }, 600); 
+     })" 
+     x-show="loading" 
+     x-transition:leave="transition ease-in duration-500"
+     x-transition:leave-start="opacity-100"
+     x-transition:leave-end="opacity-0"
+     class="fixed inset-0 z-[200] bg-ecoluxe-cream flex flex-col items-center justify-center">
+    <h2 class="text-3xl font-serif font-bold text-ecoluxe-green animate-pulse tracking-tighter">ECOLUXE</h2>
+</div>
 
     {{-- Main Content Slot --}}
     <main>
@@ -129,5 +162,17 @@ class="antialiased bg-ecoluxe-cream text-ecoluxe-ink font-sans overflow-x-hidden
     </footer>
 
     <button x-show="showBackToTop" @click="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-8 right-8 z-[90] p-4 bg-ecoluxe-green text-white rounded-full">↑</button>
+<script>
+        // Fail-safe: If Alpine fails to initialize, force hide the loader
+        setTimeout(() => {
+            const loader = document.querySelector('[x-show="isLoading"]');
+            if (loader && window.getComputedStyle(loader).display !== 'none') {
+                console.warn('Alpine.js failed to hide loader. Forcing hide.');
+                loader.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                document.body.classList.remove('loading');
+            }
+        }, 1500);
+    </script>
 </body>
 </html>
