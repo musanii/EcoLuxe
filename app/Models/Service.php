@@ -8,6 +8,12 @@ class Service extends Model
 {
      protected $guarded = [];
 
+     protected $casts = [
+        'advantages' => 'array',    // This is the missing piece
+        'is_active' => 'boolean',
+        'base_price' => 'decimal:2',
+    ];
+
      public function getIconAttribute()
 {
     // Return different SVG paths based on the service name

@@ -35,7 +35,7 @@
                             ];
 
    
-    $bgImage = $service->image_url ?? $images[$index % count($images)];
+    $bgImage = $service->image_path ?? $images[$index % count($images)];
                 @endphp
 
                 <a href="{{ route('services.show', $service->id) }}" class="group relative overflow-hidden rounded-[2.5rem] p-8 md:p-12 min-h-[450px] transition-all duration-700 hover:-translate-y-2 flex flex-col justify-end 
@@ -43,7 +43,7 @@
                     
                     {{-- 1. THE BACKGROUND IMAGE LAYER --}}
                     <div class="absolute inset-0 z-0">
-                        <img src="{{ $bgImage }}" 
+                        <img src="{{ Storage::url($service->image_path) }}" 
                             class="w-full h-full object-cover transition duration-1000 opacity-20 blur-[2px] group-hover:blur-0 group-hover:scale-110 group-hover:opacity-30 grayscale group-hover:grayscale-0" 
                             alt="{{ $service->name }}">
                         {{-- Dark overlay for featured card, Light for others --}}

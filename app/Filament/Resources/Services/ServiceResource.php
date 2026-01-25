@@ -12,6 +12,9 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -56,6 +59,33 @@ class ServiceResource extends Resource
                             ->label('Active')
                             ->default(true),
                     ])->columns(2),
+
+                Section::make('Service Details')
+                        ->description('ELaborate on the advantages and premium features.')
+                        ->schema([
+                            FileUpload::make('image_path')
+                            ->label('Featured Image')
+                            ->image()
+                            ->disk('public')
+                            ->directory('services')
+                            ->visibility('public')
+                            ->columnSpanFull(),
+                            RichEditor::make('content')
+                            ->label('Detailed Content')
+                            ->placeholder('Describe the process, the botanical products used, etc.')
+                            ->columnSpanFull(),
+
+                            Repeater::make('advantages')
+                            ->schema([
+                                TextInput::make('advantage')
+                                ->placeholder('e.g./ Pet-safe botanical extracts')
+                                ->required(),
+                            ])
+                            ->grid(2)
+                            ->columnSpanFull()
+                            ->createItemButtonLabel('Add Advantage'),
+
+                        ])
             ]);
     }
 
