@@ -64,7 +64,11 @@ class InquiryResource extends Resource
         ->columns([
             TextColumn::make('full_name')->searchable(),
             TextColumn::make('email'),
-            IconColumn::make('is_read')->boolean(),
+            IconColumn::make('is_read')->boolean()
+    ->trueIcon('heroicon-o-check-circle')
+    ->falseIcon('heroicon-o-x-circle')
+    ->trueColor('success')
+    ->falseColor('danger'),
             TextColumn::make('created_at')->dateTime()->label('Received'),
            
         ])

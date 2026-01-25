@@ -21,11 +21,13 @@ public function sendInquiry(){
             'full_name' => 'required',
             'email' => 'required|email',
             'message' => 'required',
+            
     ]);
     $inquiry = Inquiry::create([
         'full_name'=>$this->full_name,
         'email'=>$this->email,
-        'message'=>$this->message
+        'message'=>$this->message,
+        'is_read'=>false
     ]);
 
     Mail::to($this->email)->send(new ConciergeAutoResponder($this->full_name));
